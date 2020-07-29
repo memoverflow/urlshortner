@@ -38,12 +38,12 @@
                     url: baseUrl+path,
                     contentType: "application/json",
                     data: urlModel,
-                    dataType: "jsonp",  
+                    dataType: "json",  
                     success: function (message) {
-                        alert("提交成功" + JSON.stringify(message));
+                        console.log("success-" + JSON.stringify(message));
                     },
                     error: function (message) {
-                        alert("提交失败" + JSON.stringify(message));
+                        console.log("error-" + JSON.stringify(message));
                     }
                 });
                 return false;
