@@ -103,6 +103,10 @@ function deleteItem(event, callback) {
 function sendResponse(statusCode, message, callback) {
   const response = {
     statusCode: statusCode,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST, DELETE, PUT",
+    },
     body: JSON.stringify(message),
   };
   callback(null, response);

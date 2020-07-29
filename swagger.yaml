@@ -1,0 +1,76 @@
+---
+swagger: "2.0"
+info:
+  version: "1.0"
+  title: "url-shortner"
+host: "api.sname.be"
+schemes:
+- "https"
+paths:
+  /url:
+    post:
+      consumes:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "url"
+        required: true
+        schema:
+          $ref: "#/definitions/url"
+      responses: {}
+    options:
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+  /url/{hashcode}:
+    delete:
+      responses: {}
+    options:
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+  /{hashcode}:
+    get:
+      responses: {}
+    options:
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+definitions:
+  url:
+    type: "object"
+    required:
+    - "token"
+    - "url"
+    properties:
+      url:
+        type: "string"
+      token:
+        type: "string"

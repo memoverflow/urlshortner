@@ -28,24 +28,49 @@
             "url": "",
             "token": ""
         };
+
+        function RandomRange(min, max) {
+            var returnStr = "",
+            range = (max ? Math.round(Math.random() * (max-min)) + min : min),
+            arr = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd',             'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+            for(var i=0; i<range; i++){
+                var index = Math.round(Math.random() * (arr.length-1));
+                returnStr += arr[index];
+            }
+            return returnStr;
+        }
         $(document).ready(function () {
             $("#shortBtn").click(function(){
-                $(this).addClass("loading disabled");
+                var $btn = $(this);
+                $btn.addClass("loading disabled");
                 urlModel.url = $("#txtLink").val();
                 urlModel.token = $("#txtToken").val();
                 $.ajax({
                     type: "POST",
-                    dataType: 'jsonp',
+                    dataType: 'json',
                     url: baseUrl+path,
-                    data: urlModel,
+                    data: JSON.stringify(urlModel),
                     success: function (message) {
-                        console.log("success-" + JSON.stringify(message));
+                        $btn.removeClass("loading");
+                        $btn.removeClass("disabled");
+                        $("#pS").text(message.s_url);
+                        $("#pToken").text(message.token);
+                        $("#aTarget").attr("href",message.s_url);
+                        $(".modal").modal("show");
+
                     },
-                    error: function (message) {
-                        console.log("error-" + JSON.stringify(message));
+                    error:function(message){
+                        $btn.removeClass("loading");
+                        $btn.removeClass("disabled");
                     }
                 });
                 return false;
+            });
+
+            $("#reShort").click(function(){
+                var ran = RandomRange(9,9);
+                $("#txtToken").val(ran);
+                $("#shortBtn").trigger("click");
             });
         });
     </script>
@@ -79,9 +104,29 @@
     
             </form>
             <div class="ui message">
-                New to us? <a href="#">Sign Up</a>
+                Source code <a href="https://github.com/memoverflow/urlshortner" target="_blank">Github</a>
             </div>
         </div>
     </div>
+
+    <div class="ui mini modal">
+        <div class="header">Short Link</div>
+        <div class="content">
+            <p id="pS"></p>
+            <p id="pToken"></p>
+        </div>
+        <div class="actions">
+            <a class="ui error deny button">
+            Close
+            </a>
+
+            <a id="aTarget" class="ui black deny button" target="_blank" href="">
+            Navigate
+            </a>
+            <a id="reShort" class="ui primary right button">
+            Re-Short
+            </a>
+        </div>
+        </div>
 </body>
 </html>
