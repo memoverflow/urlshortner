@@ -35,10 +35,10 @@
                 urlModel.token = $("#txtToken").val();
                 $.ajax({
                     type: "POST",
-                    url: baseUrl+path,
+                    url: baseUrl+path+"?"+(new Date()).getMilliseconds(),
                     contentType: "application/json",
                     data: urlModel,
-                    dataType: "json",  
+                    dataType: "json",
                     success: function (message) {
                         console.log("success-" + JSON.stringify(message));
                     },
