@@ -2,7 +2,7 @@
 
 const db = require("./db");
 const short = require("./short");
-const URL = require("./url").default;
+const URL = require("./url");
 const HASHLENGTH = 7;
 const TINYDOMAIN = "https://api.sname.be/";
 const DURATION = 365;
@@ -19,38 +19,67 @@ const DURATION = 365;
  * @returns {Object} object - API Gateway Lambda Proxy Output Format
  *
  */
-exports.saveHandler = (event, context,callback) => {
-  if(event.url&& event.token){
-    saveItem(event, callback);
+exports.operationHandler = (event, context,callback) => {
+  if (event.httpMethod) {
+    switch(event.httpMethod) {
+      case "POST":
+        saveItem(event, callback);
+        break;
+      case "DELETE":
+        deleteItem(event,callback);
+        break;
+      default:
+        sendResponse(400,"can not find the event.httpMethod property",callback);
+    }
+  }else {
+    return sendResponse(400, "wrong request body", callback);
   }
-  return sendResponse(400,"wrong request body",callback);
 };
 
-exports.getHandler = (event, context, callback) => {
-  return {
-    statusCode:200,
-    body:"hello world"
+exports.hashHandler = (event, context, callback) => {
+  if(event.path){
+    const path = event.path.replace(/\//g,'');
+    getItem(path,callback);
+  }else{
+    return sendResponse(400, "wrong request body", callback);
   }
-};
-
-exports.deleteHandler = (event, context, callback) => {
-  return {
-    statusCode: 200,
-    body: "hello world",
-  };
 };
 
 function saveItem(event, callback) {
-  const item = event;
-  const l_url = item.url;
-  const hashid = short.generateShortURL(event.url+event.token,0,HASHLENGTH);
-  const s_url = TINYDOMAIN+hashid;
-  const url = new URL(hashid,l_url,s_url,event.token,DURATION);
+  if (event.body !== null && event.body !== undefined) {
+    const item = JSON.parse(event.body);
+    const l_url = item.url;
+    const hashid = short.generateShortURL(item.url + item.token, 0, HASHLENGTH);
+    const s_url = TINYDOMAIN + hashid;
+    const url = new URL(hashid, l_url, s_url, item.token, DURATION);
 
-  db.saveItem(url,db.Tables.URLTABLE.description).then(
-    (response) => {   
+    db.saveItem(url, db.Tables.URLTABLE.description).then(
+      (response) => {
+        console.log(response);
+        sendResponse(200, url, callback);
+      },
+      (reject) => {
+        sendResponse(400, reject, callback);
+      }
+    );
+  } else {
+    sendResponse(400, "wrong request body", callback);
+  }
+}
+
+function getItem(itemId, callback) {
+  db.getItem(itemId, db.Tables.URLTABLE.description).then(
+    (response) => {
       console.log(response);
-      sendResponse(200, url, callback);
+      if (response) {
+        const resp = {
+          statusCode: 301,
+          headers: {
+            Location: response.l_url,
+          },
+        };
+        callback(null,resp);
+      } else sendResponse(404, "Please passa valid hashid", callback);
     },
     (reject) => {
       sendResponse(400, reject, callback);
@@ -58,20 +87,18 @@ function saveItem(event, callback) {
   );
 }
 
-// function getItem(event, callback) {
-//   const itemId = event.pathParameters.productId;
+function deleteItem(event, callback) {
 
-//   db.getItem(itemId).then(
-//     (response) => {
-//       console.log(response);
-//       if (response) sendResponse(200, response, callback);
-//       else sendResponse(404, "Please passa valid hashid", callback);
-//     },
-//     (reject) => {
-//       sendResponse(400, reject, callback);
-//     }
-//   );
-// }
+  const path = event.path.replace(/\/url\//g, "");
+  db.deleteItem(path, db.Tables.URLTABLE.description).then(
+    (response) => {
+      sendResponse(200, "DELETED", callback);
+    },
+    (reject) => {
+      sendResponse(400, reject, callback);
+    }
+  );
+}
 
 function sendResponse(statusCode, message, callback) {
   const response = {

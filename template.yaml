@@ -10,9 +10,13 @@ Parameters:
     Type: String
     Description: "url shortner bucket"
   HostedZoneIdParameter:
-    Type: string
-    Default: ZOJJZC49E0EPZ
+    Type: String
+    Default: Z046538638R1CSJEELJY9
     Description: "Route 53 hostzone identity"
+  DefaultDomainParameter:
+    Type: String
+    Default: api.sname.be
+    Description: "default domain name"
 
   
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
@@ -25,15 +29,7 @@ Resources:
     Type: AWS::Serverless::Api
     Properties:
       StageName: Prod
-      Domain: 
-        DomainName: api.sname.be
-        CertificateArn: api.sname.be
-        EndpointConfiguration: REGIONAL
-        Route53:
-          HostedZoneId: 
-            Ref: HostedZoneIdParameter
-        BasePath:
-          - /v1
+      EndpointConfiguration: REGIONAL
       Models:
         URL:
           type: object
@@ -47,22 +43,52 @@ Resources:
               type: string
       Cors: "'*'"
   
+  URLDomainName:
+    Type: 'AWS::ApiGateway::DomainName'
+    Properties:
+      DomainName: 
+        Ref: DefaultDomainParameter
+      SecurityPolicy: TLS_1_2
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+      RegionalCertificateArn: "arn:aws:acm:us-east-2:291566366743:certificate/2da41b24-96f9-4b06-b62c-dbe5f46b998f"
+
+  URLDomainMapping:
+    Type: AWS::ApiGateway::BasePathMapping
+    Properties:
+      BasePath: ''
+      DomainName:
+        Ref: URLDomainName
+      Stage: !Ref URLAPI.Stage
+      RestApiId: 
+        Ref: URLAPI
+
+
   HostDNSRecordSet:
     Type: AWS::Route53::RecordSet
     Properties:
+      Name: 
+        Ref: DefaultDomainParameter
       HostedZoneId: 
         Ref: HostedZoneIdParameter
-      Name: api.sname.be
-      Type: SPF
-      TTL: '900'
-      ResourceRecords: 
-        GetAtt: URLAPI.RegionalDomainName
+      Type: 'A'
+      AliasTarget: 
+        HostedZoneId:
+          Fn::GetAtt:
+            - URLDomainName
+            - RegionalHostedZoneId
+        DNSName: 
+          Fn::GetAtt:
+            - URLDomainName
+            - RegionalDomainName
+        EvaluateTargetHealth: false
 
   HashFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./src
-      Handler: app.getHandler
+      Handler: app.hashHandler
       Runtime: nodejs12.x
       Policies:
         - AmazonDynamoDBFullAccess
@@ -75,11 +101,12 @@ Resources:
             Method: GET
             RestApiId: 
               Ref: URLAPI
-  URLAddFunction:
+
+  URLOperationFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./src
-      Handler: app.saveHandler
+      Handler: app.operationHandler
       Runtime: nodejs12.x
       Policies:
         - AmazonDynamoDBFullAccess
@@ -95,16 +122,6 @@ Resources:
             RequestModel:
               Model: URL
               Required: true
-  URLDeleteFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: ./src
-      Handler: app.deleteHandler
-      Runtime: nodejs12.x
-      Policies:
-        - AmazonDynamoDBFullAccess
-        - AmazonS3FullAccess
-      Events:
         URLDeleteAPI:
           Type: Api
           Properties:

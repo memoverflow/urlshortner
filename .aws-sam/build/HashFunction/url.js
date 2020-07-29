@@ -1,13 +1,8 @@
 'use strict';
 
 /**
- * Define the entity class of URL
- *
- * @param {*} hashid  hash code(partition id)
- * @param {*} l_url   long url
- * @param {*} s_url   short url
- * @param {*} create_at create date 
- * @param {*} exp_at  short url expire date
+ * 
+ * @param {added days} days 
  */
 Date.prototype.addDays = function (days) {
   var date = new Date(this.valueOf());
@@ -15,7 +10,20 @@ Date.prototype.addDays = function (days) {
   return date;
 };
 
+/**
+ * URL entity class 
+ * will serialized to DynamoDB
+ * @class URL
+ */
 class URL {
+  /**
+   *
+   * @param {hash code(partitionid)} hashid
+   * @param {long url} l_url
+   * @param {short url} s_url
+   * @param {user token to generate hash code} token
+   * @param {expire days} days
+   */
   constructor(hashid, l_url, s_url, token, days) {
     const date = new Date();
     const exp = date.addDays(days);
@@ -53,25 +61,7 @@ class URL {
   setToken(val) {
     this.token = val;
   }
+  
 }
-
-
-
-
-
-
-
-
-
-
-URL.prototype.getShortURL = (val) => {
-  this.s_url = val;
-}
-
-URL.prototype.getExpireDate = (val) => {
-  this.exp_at = val;
-}
-
-
 
 module.exports = URL;

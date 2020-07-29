@@ -37,12 +37,12 @@ module.exports.saveItem = (item,table) => {
     );
 };
 
-module.exports.getItem = (itemId) => {
+module.exports.getItem = (itemId,table) => {
   const params = {
     Key: {
       hashid: itemId,
     },
-    TableName: TABLE_NAME,
+    TableName: table,
   };
 
   return dynamo
