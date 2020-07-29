@@ -1,0 +1,144 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  URL Shortner
+
+  URL Shortner stack definition.
+
+Parameters:
+  BuildBucketNameParameter:
+    Type: String
+    Description: "url shortner bucket"
+  HostedZoneIdParameter:
+    Type: string
+    Default: ZOJJZC49E0EPZ
+    Description: "Route 53 hostzone identity"
+
+  
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 10
+
+Resources:
+  URLAPI:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Domain: 
+        DomainName: api.sname.be
+        CertificateArn: api.sname.be
+        EndpointConfiguration: REGIONAL
+        Route53:
+          HostedZoneId: 
+            Ref: HostedZoneIdParameter
+        BasePath:
+          - /v1
+      Models:
+        URL:
+          type: object
+          required:
+            - url
+            - token
+          properties:
+            url:
+              type: string
+            token:
+              type: string
+      Cors: "'*'"
+  
+  HostDNSRecordSet:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: 
+        Ref: HostedZoneIdParameter
+      Name: api.sname.be
+      Type: SPF
+      TTL: '900'
+      ResourceRecords: 
+        GetAtt: URLAPI.RegionalDomainName
+
+  HashFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./src
+      Handler: app.getHandler
+      Runtime: nodejs12.x
+      Policies:
+        - AmazonDynamoDBFullAccess
+        - AmazonS3FullAccess
+      Events:
+        RedirectAPI:
+          Type: Api
+          Properties:
+            Path: /{hashcode}
+            Method: GET
+            RestApiId: 
+              Ref: URLAPI
+  URLAddFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./src
+      Handler: app.saveHandler
+      Runtime: nodejs12.x
+      Policies:
+        - AmazonDynamoDBFullAccess
+        - AmazonS3FullAccess
+      Events:
+        URLAddAPI:
+          Type: Api
+          Properties:
+            Path: /url
+            Method: POST
+            RestApiId: 
+              Ref: URLAPI
+            RequestModel:
+              Model: URL
+              Required: true
+  URLDeleteFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./src
+      Handler: app.deleteHandler
+      Runtime: nodejs12.x
+      Policies:
+        - AmazonDynamoDBFullAccess
+        - AmazonS3FullAccess
+      Events:
+        URLDeleteAPI:
+          Type: Api
+          Properties:
+            Path: /url/{hashcode}
+            Method: DELETE
+            RestApiId: 
+              Ref: URLAPI
+
+  urlTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: urlTable
+      AttributeDefinitions:
+        - AttributeName: hashid
+          AttributeType: S
+      KeySchema:  
+        - AttributeName: hashid
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5  
+# Outputs:
+#   ApiURL:
+#     Description: "API URL"
+#     Value: !Sub 'https://${URLAPI}.execute-api.${AWS::Region}.amazonaws.com/Prod/'
+#   HashFunction:
+#     Description: "Hash Lambda Function ARN"
+#     Value: !GetAtt HashFunction.Arn
+#   HashFunctionIamRole:
+#     Description: "Implicit IAM Role created for hash function"
+#     Value: !GetAtt HashFunctionRole.Arn
+
+
+
+
+
+

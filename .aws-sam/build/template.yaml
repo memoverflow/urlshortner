@@ -1,0 +1,98 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'URL Shortner
+
+  URL Shortner stack definition.
+
+  '
+Parameters:
+  BuildBucketName:
+    Type: String
+    Description: url_shortner_bucket
+Globals:
+  Function:
+    Timeout: 10
+Resources:
+  URLAPI:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Models:
+        URL:
+          type: object
+          required:
+          - url
+          - token
+          properties:
+            url:
+              type: string
+            token:
+              type: string
+      Cors: '''*'''
+  HashFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: HashFunction
+      Handler: app.getHandler
+      Runtime: nodejs12.x
+      Policies:
+      - AmazonDynamoDBFullAccess
+      - AmazonS3FullAccess
+      Events:
+        RedirectAPI:
+          Type: Api
+          Properties:
+            Path: /{hashcode}
+            Method: GET
+            RestApiId:
+              Ref: URLAPI
+  URLAddFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: URLAddFunction
+      Handler: app.saveHandler
+      Runtime: nodejs12.x
+      Policies:
+      - AmazonDynamoDBFullAccess
+      - AmazonS3FullAccess
+      Events:
+        URLAddAPI:
+          Type: Api
+          Properties:
+            Path: /url
+            Method: POST
+            RestApiId:
+              Ref: URLAPI
+            RequestModel:
+              Model: URL
+              Required: true
+  URLDeleteFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: URLDeleteFunction
+      Handler: app.deleteHandler
+      Runtime: nodejs12.x
+      Policies:
+      - AmazonDynamoDBFullAccess
+      - AmazonS3FullAccess
+      Events:
+        URLDeleteAPI:
+          Type: Api
+          Properties:
+            Path: /url/{hashcode}
+            Method: DELETE
+            RestApiId:
+              Ref: URLAPI
+  urlTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: urlTable
+      AttributeDefinitions:
+      - AttributeName: hashid
+        AttributeType: S
+      KeySchema:
+      - AttributeName: hashid
+        KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
