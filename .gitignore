@@ -105,3 +105,5 @@ dist
 
 # SAM config file
 samconfig.toml
+
+.aws-sam
