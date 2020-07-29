@@ -36,6 +36,7 @@
                 $.ajax({
                     type: "POST",
                     cache: false,
+                    contentType: 'application/json',
                     url: baseUrl+path,
                     data: urlModel,
                     headers: {
