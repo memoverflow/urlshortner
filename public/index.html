@@ -35,14 +35,9 @@
                 urlModel.token = $("#txtToken").val();
                 $.ajax({
                     type: "POST",
-                    cache: false,
-                    contentType: 'application/json',
+                    dataType: 'jsonp',
                     url: baseUrl+path,
                     data: urlModel,
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'text/plain'
-                    },
                     success: function (message) {
                         console.log("success-" + JSON.stringify(message));
                     },
