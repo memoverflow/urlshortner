@@ -143,16 +143,6 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: 5
         WriteCapacityUnits: 5  
-# Outputs:
-#   ApiURL:
-#     Description: "API URL"
-#     Value: !Sub 'https://${URLAPI}.execute-api.${AWS::Region}.amazonaws.com/Prod/'
-#   HashFunction:
-#     Description: "Hash Lambda Function ARN"
-#     Value: !GetAtt HashFunction.Arn
-#   HashFunctionIamRole:
-#     Description: "Implicit IAM Role created for hash function"
-#     Value: !GetAtt HashFunctionRole.Arn
 
 
 
