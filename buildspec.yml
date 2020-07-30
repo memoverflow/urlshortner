@@ -7,12 +7,13 @@ phases:
   pre_build:
     commands:
       # Discover and run unit tests in the 'tests' directory
-      - cd src && npm test
+      - cd src
+      - npm test
       # Remove all unit tests to reduce the size of the package that will be ultimately uploaded to Lambda
-      - cd src && rm -rf ./coverage
-      - cd src && rm -rf ./node_modules
+      - rm -rf ./coverage
+      - rm -rf ./node_modules
       # Remove all dependencies not needed for the Lambda deployment package (the packages from devDependencies in package.json)
-      - cd src && npm prune --production
+      - npm prune --production
   build:
     commands:
       # Use AWS SAM to package the application by using AWS CloudFormation
