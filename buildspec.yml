@@ -11,8 +11,6 @@ phases:
       # Remove all unit tests to reduce the size of the package that will be ultimately uploaded to Lambda
       - rm -rf ./coverage
       - rm -rf ./node_modules
-      # Remove all dependencies not needed for the Lambda deployment package (the packages from devDependencies in package.json)
-      - npm prune --production
   build:
     commands:
       # Use AWS SAM to package the application by using AWS CloudFormation
@@ -21,4 +19,4 @@ phases:
 artifacts:
   type: zip
   files:
-    - ./urlshortnerbucket/url-shortner.zip
+    - '**/*'
