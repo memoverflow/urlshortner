@@ -31,6 +31,7 @@ let dynamo = new AWS.DynamoDB.DocumentClient({
  */
 exports.handler = async (event) => {
   console.log(event)
+  console.log("event")
   if (event.httpMethod) {
     switch (event.httpMethod) {
       case "POST":
