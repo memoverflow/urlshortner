@@ -18,6 +18,11 @@ paths:
         schema:
           $ref: "#/definitions/url"
       responses: {}
+      x-amazon-apigateway-integration:
+        uri: "arn:aws:apigateway:us-east-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-2:291566366743:function:url-shortner-URLOperationFunction-IGVG6J4WMY88/invocations"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+        type: "aws_proxy"
     options:
       consumes:
       - "application/json"
@@ -31,9 +36,27 @@ paths:
               type: "string"
             Access-Control-Allow-Methods:
               type: "string"
+      x-amazon-apigateway-integration:
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,POST'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+            responseTemplates:
+              application/json: "{}\n"
+        requestTemplates:
+          application/json: "{\n  \"statusCode\" : 200\n}\n"
+        passthroughBehavior: "when_no_match"
+        type: "mock"
   /url/{hashcode}:
     delete:
       responses: {}
+      x-amazon-apigateway-integration:
+        uri: "arn:aws:apigateway:us-east-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-2:291566366743:function:url-shortner-URLOperationFunction-IGVG6J4WMY88/invocations"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+        type: "aws_proxy"
     options:
       consumes:
       - "application/json"
@@ -47,9 +70,27 @@ paths:
               type: "string"
             Access-Control-Allow-Methods:
               type: "string"
+      x-amazon-apigateway-integration:
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Methods: "'DELETE,OPTIONS'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+            responseTemplates:
+              application/json: "{}\n"
+        requestTemplates:
+          application/json: "{\n  \"statusCode\" : 200\n}\n"
+        passthroughBehavior: "when_no_match"
+        type: "mock"
   /{hashcode}:
     get:
       responses: {}
+      x-amazon-apigateway-integration:
+        uri: "arn:aws:apigateway:us-east-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-2:291566366743:function:url-shortner-HashFunction-SD97I1UC5WTG/invocations"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+        type: "aws_proxy"
     options:
       consumes:
       - "application/json"
@@ -63,6 +104,19 @@ paths:
               type: "string"
             Access-Control-Allow-Methods:
               type: "string"
+      x-amazon-apigateway-integration:
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+            responseTemplates:
+              application/json: "{}\n"
+        requestTemplates:
+          application/json: "{\n  \"statusCode\" : 200\n}\n"
+        passthroughBehavior: "when_no_match"
+        type: "mock"
 definitions:
   url:
     type: "object"
