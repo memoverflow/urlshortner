@@ -7,7 +7,7 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -23,5 +23,8 @@
     "url": "https://github.com/memoverflow/urlshortner/issues"
   },
   "homepage": "https://github.com/memoverflow/urlshortner#readme",
-  "dependencies": {}
+  "dependencies": {
+    "aws-sdk-mock": "^5.1.0",
+    "jest": "^26.1.0"
+  }
 }

@@ -3,9 +3,9 @@
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css" rel="stylesheet" type="text/css" />
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
+    <link href="https://cdn.bootcdn.net/ajax/libs/semantic-ui/2.4.1/semantic.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.bootcdn.net/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
   
     <style type="text/css">
     body {
@@ -42,6 +42,7 @@
         $(document).ready(function () {
             $("#shortBtn").click(function(){
                 var $btn = $(this);
+                var $shbtn = $("#reShort");
                 $btn.addClass("loading disabled");
                 urlModel.url = $("#txtLink").val();
                 urlModel.token = $("#txtToken").val();
@@ -53,6 +54,8 @@
                     success: function (message) {
                         $btn.removeClass("loading");
                         $btn.removeClass("disabled");
+                        $shbtn.removeClass("loading");
+                        $shbtn.removeClass("disabled");
                         $("#pS").text(message.s_url);
                         $("#pToken").text(message.token);
                         $("#aTarget").attr("href",message.s_url);
@@ -68,6 +71,8 @@
             });
 
             $("#reShort").click(function(){
+                var $btn = $(this);
+                $btn.addClass("loading diabled");
                 var ran = RandomRange(9,9);
                 $("#txtToken").val(ran);
                 $("#shortBtn").trigger("click");
@@ -104,7 +109,7 @@
     
             </form>
             <div class="ui message">
-                Source code <a href="https://github.com/memoverflow/urlshortner" target="_blank">Github</a>
+                Source code on <a href="https://github.com/memoverflow/urlshortner" target="_blank">Github</a>
             </div>
         </div>
     </div>
