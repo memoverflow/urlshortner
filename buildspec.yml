@@ -16,8 +16,9 @@ phases:
   build:
     commands:
       # Use AWS SAM to package the application by using AWS CloudFormation
-      - aws cloudformation package --template template.yml --s3-bucket urlshortner --output-template template-export.yml
+      - cd ..
+      - aws cloudformation package --template template.yml
 artifacts:
   type: zip
   files:
-    - template-export.yml
+    - url-shortner.zip
