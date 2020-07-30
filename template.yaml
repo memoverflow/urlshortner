@@ -30,18 +30,12 @@ Resources:
     Properties:
       StageName: Prod
       EndpointConfiguration: REGIONAL
-      Models:
-        URL:
-          type: object
-          required:
-            - url
-            - token
-          properties:
-            url:
-              type: string
-            token:
-              type: string
       Cors: "'*'"
+      DefinitionBody:
+        'Fn::Transform':
+          Name: 'AWS::Include'
+          Parameters:
+            Location: ./swagger.yaml
   
   URLDomainName:
     Type: 'AWS::ApiGateway::DomainName'

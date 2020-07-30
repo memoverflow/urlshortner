@@ -61,7 +61,12 @@ class URL {
   setToken(val) {
     this.token = val;
   }
-  
+  setCreateAt(val) {
+    this.create_at = val;
+  }
+  setExpAt(val) {
+    this.exp_at = val;
+  }
 }
 
 module.exports = URL;

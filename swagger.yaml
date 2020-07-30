@@ -19,7 +19,8 @@ paths:
           $ref: "#/definitions/url"
       responses: {}
       x-amazon-apigateway-integration:
-        uri: "arn:aws:apigateway:us-east-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-2:291566366743:function:url-shortner-URLOperationFunction-IGVG6J4WMY88/invocations"
+        uri: 
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${URLOperationFunction.Arn}/invocations"
         passthroughBehavior: "when_no_match"
         httpMethod: "POST"
         type: "aws_proxy"
@@ -53,7 +54,8 @@ paths:
     delete:
       responses: {}
       x-amazon-apigateway-integration:
-        uri: "arn:aws:apigateway:us-east-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-2:291566366743:function:url-shortner-URLOperationFunction-IGVG6J4WMY88/invocations"
+        uri: 
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${URLOperationFunction.Arn}/invocations"
         passthroughBehavior: "when_no_match"
         httpMethod: "POST"
         type: "aws_proxy"
@@ -87,7 +89,8 @@ paths:
     get:
       responses: {}
       x-amazon-apigateway-integration:
-        uri: "arn:aws:apigateway:us-east-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-2:291566366743:function:url-shortner-HashFunction-SD97I1UC5WTG/invocations"
+        uri: 
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${HashFunction.Arn}/invocations"
         passthroughBehavior: "when_no_match"
         httpMethod: "POST"
         type: "aws_proxy"
