@@ -22,7 +22,7 @@ phases:
       - rm -rf README.md
       - rm -rf LICENSE
       - rm -rf .gitignore 
-      - aws cloudformation package --template template.yaml --s3-bucket urlshortnerbucket --region us-east-2
+      - aws cloudformation package --template template.yaml --s3-bucket urlshortnerbucket --output-template-file outputtemplate.yml
 artifacts:
   type: zip
   discard-paths: yes
