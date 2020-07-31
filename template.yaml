@@ -33,7 +33,7 @@ Resources:
           Name: 'AWS::Include'
           Parameters:
             Location: ./swagger.yaml
-  
+  # URL Domain Name
   URLDomainName:
     Type: 'AWS::ApiGateway::DomainName'
     Properties:
