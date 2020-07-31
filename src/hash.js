@@ -36,9 +36,12 @@ exports.handler = async (event) => {
   }
 };
 
+/**
+ * get a short url by hashid from DynamoDB and return a 301 redirect
+ * @param {hashid which use to search a model from DynamoDB} hashid 
+ */
 async function getItem(hashid) {
   let asyncGetItem = new Promise((res, rej) => {
-    
     const params = {
       Key: {
         hashid: hashid,
@@ -68,12 +71,18 @@ async function getItem(hashid) {
     } else {
       return sendResponse(
         STATUSCODE.ILLEGAL,
-        "the url has been expired"
+        "the url has been expeired"
       );
     }
   } else return sendResponse(STATUSCODE.NOTFOUND, "Please passa valid URL");
 }
 
+/**
+ * return a http response to client
+ * @param {http status code} statusCode 
+ * @param {return message} message 
+ * @param {Location:301} headers 
+ */
 function sendResponse(statusCode, message, headers) {
   return {
     statusCode: statusCode,

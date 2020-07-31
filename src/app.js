@@ -3,9 +3,13 @@
 const AWS = require("aws-sdk");
 const short = require("./short");
 const URL = require("./url");
+// Hashid length, will return to user
 const HASHLENGTH = 7;
+// Default domain. Now I use api.sname.be, but should be sname.be
 const TINYDOMAIN = "https://api.sname.be/";
+// short url expire date (days)
 const DURATION = 365;
+// dynamoDB name
 const TABLE_NAME = "urlTable";
 const STATUSCODE = {
   SUCCESS: 200,
@@ -47,6 +51,10 @@ exports.handler = async (event) => {
   }
 };
 
+/**
+ * save url data to dynamoDB
+ * @param {event from API Gateway} event 
+ */
 async function saveItem(event) {
   if (event.body !== null && event.body !== undefined) {
     const item = JSON.parse(event.body);
@@ -80,6 +88,10 @@ async function saveItem(event) {
   }
 }
 
+/**
+ * delete url data to dynamoDB
+ * @param {event from API Gateway} event 
+ */
 async function deleteItem(event) {
   const hashid = event.path.replace(/\/url\//g, "");
   let asyncDeleteItem = new Promise((res, rej) => {
@@ -105,6 +117,12 @@ async function deleteItem(event) {
   else return sendResponse(STATUSCODE.ILLEGAL, "Wrong request body");
 }
 
+/**
+ * return a http response to client
+ * @param {http status code} statusCode 
+ * @param {return message} message 
+ * @param {cors header} headers 
+ */
 function sendResponse(statusCode, message) {
   return {
     statusCode: statusCode,
