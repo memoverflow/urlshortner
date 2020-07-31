@@ -19,6 +19,13 @@ phases:
 artifacts:
   type: zip
   base-directory: './'
+  secondary-artifacts:
+    type: zip
+    base-directory: './'
+    files:
+    - '**/*'
   files:
     - '**/*'
+  
+  
 
