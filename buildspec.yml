@@ -11,14 +11,22 @@ phases:
       # Remove all unit tests to reduce the size of the package that will be ultimately uploaded to Lambda
       - rm -rf ./coverage 
       - rm -rf ./node_modules
+      - rm -rf ./tests
+      - rm -rf .npmignore
+      
   build:
     commands:
       # Use AWS SAM to package the application by using AWS CloudFormation
       - cd ..
+      - rm -rf ./public
+      - rm -rf README.md
+      - rm -rf LICENSE
+      - rm -rf .gitignore
       - aws cloudformation package --template template.yaml --s3-bucket urlshortnerbucket --region us-east-2
 artifacts:
   type: zip
-  base-directory: './src'
+  base-directory: './'
+  discard-paths: yes
   files:
     - '**/*'
   
