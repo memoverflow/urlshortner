@@ -28,7 +28,6 @@ let dynamo = new AWS.DynamoDB.DocumentClient({
  */
 
 exports.handler = async (event) => {
-  console.log(event)
   if (event.path) {
     const hashid = event.path.replace(/\//g, "");
     return await getItem(hashid);
