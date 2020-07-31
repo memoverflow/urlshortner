@@ -81,7 +81,6 @@ Resources:
       CodeUri: s3://urlshortnerbucket/urlshortnerkey
       Handler: hash.handler
       Runtime: nodejs12.x
-      AutoPublishAlias: live
       Policies:
         - AmazonDynamoDBFullAccess
         - AmazonS3FullAccess
@@ -100,7 +99,6 @@ Resources:
       CodeUri: s3://urlshortnerbucket/urlshortnerkey
       Handler: app.handler
       Runtime: nodejs12.x
-      AutoPublishAlias: live
       Policies:
         - AmazonDynamoDBFullAccess
         - AmazonS3FullAccess
