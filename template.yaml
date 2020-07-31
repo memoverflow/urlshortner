@@ -32,7 +32,7 @@ Resources:
         'Fn::Transform':
           Name: 'AWS::Include'
           Parameters:
-            Location: s3://urlshortnerbucket//${ArtifactBucket}/swagger.yaml
+            Location: s3://urlshortnerbucket//urlshortner.zip/swagger.yaml
 
   URLDomainName:
     Type: 'AWS::ApiGateway::DomainName'
