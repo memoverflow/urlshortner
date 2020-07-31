@@ -6,9 +6,6 @@ Description: 'URL Shortner
 
   '
 Parameters:
-  BuildBucketNameParameter:
-    Type: String
-    Description: url shortner bucket
   HostedZoneIdParameter:
     Type: String
     Default: Z046538638R1CSJEELJY9
