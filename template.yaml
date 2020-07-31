@@ -78,9 +78,10 @@ Resources:
   HashFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://urlshortnerbucket/${Version}/urlshortnerkey
+      CodeUri: s3://urlshortnerbucket/urlshortnerkey
       Handler: hash.handler
       Runtime: nodejs12.x
+      AutoPublishAlias: live
       Policies:
         - AmazonDynamoDBFullAccess
         - AmazonS3FullAccess
@@ -96,9 +97,10 @@ Resources:
   URLOperationFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://urlshortnerbucket/${Version}/urlshortnerkey
+      CodeUri: s3://urlshortnerbucket/urlshortnerkey
       Handler: app.handler
       Runtime: nodejs12.x
+      AutoPublishAlias: live
       Policies:
         - AmazonDynamoDBFullAccess
         - AmazonS3FullAccess
