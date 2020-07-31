@@ -96,7 +96,7 @@ Resources:
   URLOperationFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: !Sub "s3://urlshortnerbucket/${Version}/src"
+      CodeUri: !Sub "s3://urlshortnerbucket/${Version}"
       Handler: app.handler
       Runtime: nodejs12.x
       Policies:
