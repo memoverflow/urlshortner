@@ -18,6 +18,7 @@ phases:
       - sam package --template template.yaml --s3-bucket urlshortnerbucket --region us-east-2
 artifacts:
   type: zip
+  base-directory: './'
   files:
     - '**/*'
 
