@@ -9,7 +9,7 @@ phases:
       # Discover and run unit tests in the 'tests' directory
       - npm test
       # Remove all unit tests to reduce the size of the package that will be ultimately uploaded to Lambda
-      - rm -rf ./coverage
+      - rm -rf ./coverage 
       - rm -rf ./node_modules
   build:
     commands:
