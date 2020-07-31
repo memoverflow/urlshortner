@@ -78,8 +78,7 @@ Resources:
   HashFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: 
-        Bucket: 
+      CodeUri: s3://urlshortnerbucket/${Version}/src
       Handler: hash.handler
       Runtime: nodejs12.x
       Policies:
@@ -97,7 +96,7 @@ Resources:
   URLOperationFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: !Sub "urlshortnerbucket/${Version}/src"
+      CodeUri: s3://urlshortnerbucket/${Version}/src
       Handler: app.handler
       Runtime: nodejs12.x
       Policies:
