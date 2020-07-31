@@ -21,7 +21,7 @@ phases:
       - rm -rf ./public
       - rm -rf README.md
       - rm -rf LICENSE
-      - rm -rf .gitignore
+      - rm -rf .gitignore 
       - aws cloudformation package --template template.yaml --s3-bucket urlshortnerbucket --region us-east-2
 artifacts:
   type: zip
