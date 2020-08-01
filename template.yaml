@@ -98,7 +98,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       #CodeUri: s3://urlshortnerbucket/urlshortnerkey
-      CodeUri: .src
+      CodeUri: ./src
       Handler: app.handler
       Runtime: nodejs12.x
       Policies:
