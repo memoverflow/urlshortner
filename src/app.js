@@ -2,6 +2,7 @@
 
 const AWS = require("aws-sdk");
 const short = require("./short");
+// URL entity
 const URL = require("./url");
 // Hashid length, will return to user
 const HASHLENGTH = 7;
