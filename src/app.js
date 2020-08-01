@@ -53,7 +53,7 @@ exports.handler = async (event) => {
 
 /**
  * save url data to dynamoDB
- * @param {event from API Gateway} event 
+ * @param {event from API Gateway} event
  */
 async function saveItem(event) {
   if (event.body !== null && event.body !== undefined) {
@@ -81,7 +81,7 @@ async function saveItem(event) {
     });
 
     const resp = await asyncPutItem;
-    if(resp == 1) return sendResponse(STATUSCODE.SUCCESS, url);
+    if (resp == 1) return sendResponse(STATUSCODE.SUCCESS, url);
     else return sendResponse(STATUSCODE.ILLEGAL, "wrong request body");
   } else {
     return sendResponse(STATUSCODE.ILLEGAL, "Wrong request body");
@@ -90,7 +90,7 @@ async function saveItem(event) {
 
 /**
  * delete url data to dynamoDB
- * @param {event from API Gateway} event 
+ * @param {event from API Gateway} event
  */
 async function deleteItem(event) {
   const hashid = event.path.replace(/\/url\//g, "");
@@ -119,9 +119,9 @@ async function deleteItem(event) {
 
 /**
  * return a http response to client
- * @param {http status code} statusCode 
- * @param {return message} message 
- * @param {cors header} headers 
+ * @param {http status code} statusCode
+ * @param {return message} message
+ * @param {cors header} headers
  */
 function sendResponse(statusCode, message) {
   return {
