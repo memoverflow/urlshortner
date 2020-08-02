@@ -12,6 +12,7 @@ const TINYDOMAIN = "https://api.sname.be/";
 const DURATION = 365;
 // dynamoDB name
 const TABLE_NAME = "urlTable";
+const EXCEPTIONMESSAGE = "Bad request";
 const STATUSCODE = {
   SUCCESS: 200,
   INTERERROR: 500,
@@ -38,17 +39,17 @@ exports.handler = async (event) => {
   if (event.httpMethod) {
     switch (event.httpMethod) {
       case "POST":
-        return await saveItem(event);
+        if (event.body !== null && event.body !== undefined) {
+          const item = JSON.parse(event.body);
+          return await saveItem(item, 0);
+        }
       case "DELETE":
         return await deleteItem(event);
       default:
-        return sendResponse(
-          STATUSCODE.SUCCESS,
-          "can not find the event.httpMethod property"
-        );
+        return sendResponse(STATUSCODE.ILLEGAL, "Bad request");
     }
   } else {
-    return sendResponse(STATUSCODE.ILLEGAL, "wrong request body");
+    return sendResponse(STATUSCODE.ILLEGAL, EXCEPTIONMESSAGE);
   }
 };
 
@@ -56,22 +57,20 @@ exports.handler = async (event) => {
  * save url data to dynamoDB
  * @param {event from API Gateway} event
  */
-async function saveItem(event) {
-  if (event.body !== null && event.body !== undefined) {
-    const item = JSON.parse(event.body);
-    const l_url = item.url;
-    if(!validateUrl(l_url)) 
-      return sendResponse(STATUSCODE.ILLEGAL, "invalid url");
-    const hashid = short.generateShortURL(item.url + item.token, 0, HASHLENGTH);
-    const s_url = TINYDOMAIN + hashid;
-    const url = new URL(hashid, l_url, s_url, item.token, DURATION);
+async function saveItem(item, times) {
+  const l_url = item.url;
+  if (!validateUrl(l_url))
+    return sendResponse(STATUSCODE.ILLEGAL, "invalid url");
+  const hashid = short.generateShortURL(item.url + item.token, 0, HASHLENGTH);
+  const s_url = TINYDOMAIN + hashid;
+  const url = new URL(hashid, l_url, s_url, item.token, DURATION);
 
-    const params = {
-      TableName: TABLE_NAME,
-      Item: url,
-      ConditionExpression: "attribute_not_exists(hashid)"
-    };
-
+  const params = {
+    TableName: TABLE_NAME,
+    Item: url,
+    ConditionExpression: "attribute_not_exists(hashid)",
+  };
+  try {
     let asyncPutItem = new Promise((res, rej) => {
       dynamo.put(params, function (err, data) {
         if (err) {
@@ -79,16 +78,20 @@ async function saveItem(event) {
           rej(err);
         } else {
           console.log("Success", data);
-          res(1);
+          res(data);
         }
       });
     });
 
-    const resp = await asyncPutItem;
-    if (resp == 1) return sendResponse(STATUSCODE.SUCCESS, url);
-    else return sendResponse(STATUSCODE.ILLEGAL, "wrong request body");
-  } else {
-    return sendResponse(STATUSCODE.ILLEGAL, "Wrong request body");
+    await asyncPutItem;
+    return sendResponse(STATUSCODE.SUCCESS, url);
+  } catch (e) {
+    if (times < 3) {
+      item.token = randomRange(8, 8);
+      times++;
+      return await saveItem(item, times);
+    }
+    return sendResponse(STATUSCODE.ILLEGAL, EXCEPTIONMESSAGE);
   }
 }
 
@@ -118,7 +121,7 @@ async function deleteItem(event) {
 
   const resp = await asyncDeleteItem;
   if (resp == 1) return sendResponse(STATUSCODE.SUCCESS, "DELETED");
-  else return sendResponse(STATUSCODE.ILLEGAL, "Wrong request body");
+  else return sendResponse(STATUSCODE.ILLEGAL, EXCEPTIONMESSAGE);
 }
 
 /**
@@ -140,10 +143,89 @@ function sendResponse(statusCode, message) {
 
 /**
  * valid aa URL
- * @param {URL} value 
+ * @param {URL} value
  */
 function validateUrl(value) {
   return /^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:[/?#]\S*)?$/i.test(
     value
   );
+}
+
+/**
+ * Random a string token
+ * @param {Min length} min
+ * @param {Max length} max
+ */
+function randomRange(min, max) {
+  var returnStr = "",
+    range = max ? Math.round(Math.random() * (max - min)) + min : min,
+    arr = [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f",
+      "g",
+      "h",
+      "i",
+      "j",
+      "k",
+      "l",
+      "m",
+      "n",
+      "o",
+      "p",
+      "q",
+      "r",
+      "s",
+      "t",
+      "u",
+      "v",
+      "w",
+      "x",
+      "y",
+      "z",
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J",
+      "K",
+      "L",
+      "M",
+      "N",
+      "O",
+      "P",
+      "Q",
+      "R",
+      "S",
+      "T",
+      "U",
+      "V",
+      "W",
+      "X",
+      "Y",
+      "Z",
+    ];
+  for (var i = 0; i < range; i++) {
+    var index = Math.round(Math.random() * (arr.length - 1));
+    returnStr += arr[index];
+  }
+  return returnStr;
 }
