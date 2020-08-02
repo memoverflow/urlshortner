@@ -69,6 +69,7 @@ async function saveItem(event) {
     const params = {
       TableName: TABLE_NAME,
       Item: url,
+      ConditionExpression: "attribute_not_exists(hashid)"
     };
 
     let asyncPutItem = new Promise((res, rej) => {
