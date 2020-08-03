@@ -74,8 +74,6 @@
             $("#reShort").click(function(){
                 var $btn = $(this);
                 $btn.addClass("loading diabled");
-                var ran = RandomRange(9,9);
-                $("#txtToken").val(ran);
                 $("#shortBtn").trigger("click");
             });
         });

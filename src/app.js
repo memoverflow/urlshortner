@@ -61,7 +61,7 @@ async function saveItem(item, times) {
   const l_url = item.url;
   if (!validateUrl(l_url))
     return sendResponse(STATUSCODE.ILLEGAL, "invalid url");
-  const hashid = short.generateShortURL(item.url + item.token, 0, HASHLENGTH);
+  const hashid = short.generateShortURL(encodeURI(item.url) + item.token, 0, HASHLENGTH);
   const s_url = TINYDOMAIN + hashid;
   const url = new URL(hashid, l_url, s_url, item.token, DURATION);
 
