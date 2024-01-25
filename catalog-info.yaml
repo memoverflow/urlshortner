@@ -4,6 +4,7 @@ metadata:
   name: urlshortner
   annotations:
     github.com/project-slug: memoverflow/urlshortner
+    jenkins.io/job-full-name: /jasolar-api
 spec:
   type: other
   lifecycle: unknown
