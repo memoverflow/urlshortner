@@ -6,6 +6,6 @@ metadata:
     github.com/project-slug: memoverflow/urlshortner
     jenkins.io/job-full-name: /jasolar-api
 spec:
-  type: other
-  lifecycle: unknown
+  type: service
+  lifecycle: experimental
   owner: guests
